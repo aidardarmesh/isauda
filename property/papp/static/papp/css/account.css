@@ -1,0 +1,569 @@
+/*----------------------------------Basic styles----------------------------------*/
+body, html{
+    margin: 0;
+    font-family: "MuseoSansLight";
+}
+
+/*----------------------------------Header styles----------------------------------*/
+#header
+{
+	background-color: #fff;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+#header_content
+{
+	margin: 0 auto;
+	width: 1180px;
+	height: 90px;
+}
+
+#menu
+{
+	width: 79px;
+    height: 90px;
+	border-left: 1px solid #e6e6e6;
+	text-align: center;
+	float: left;
+}
+
+#menu img
+{
+    margin-top: 30px;
+	width: 30px;
+	height: 21px;
+}
+
+#logo
+{
+	float: left;
+}
+
+#logo img
+{
+	width: 219px;
+	height: 90px;
+	border-left: 1px solid #e6e6e6;
+}
+
+#callcenter
+{
+	width: 279px;
+	height: 90px;
+	border-left: 1px solid #e6e6e6;
+	float: left;
+	text-align: center;
+}
+
+#callcenter p:first-child
+{
+	margin: 14px auto 4px;
+	font-family: "MuseoSansLight";
+	font-size: 19px;
+}
+
+#callcenter p:first-child img 
+{
+	padding-left: 24px;
+	vertical-align: text-bottom;
+}
+
+#callcenter p:last-child
+{
+	margin: 10px auto 4px;
+	font-family: "MuseoSansLight";
+	font-size: 15px;
+	color: #007553;
+}
+
+#callcenter b
+{
+	font-weight: bold;
+}
+
+#callcenter select
+{
+	color: #007553;
+	font: 15px "MuseoSansLight";
+	width: 157px;
+	height: 26px;
+	border: none;
+	text-decoration: underline;
+	/*for webkit*/
+	-webkit-appearance: none;
+	/*for FireFox*/
+	-moz-appearance: none;
+	text-indent: 0.01px;
+	/*for IE*/
+	-ms-appearance: none;
+	appearance: none!important;
+    background-color: #fff;
+	background-size: 12%;
+	background-position: right center;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	text-align-last: center; /*for Google Chrome*/
+	text-align: center; /*for FireFox*/
+}
+
+#callcenter select::-ms-expand {
+  	display: none;
+}
+
+#contacts
+{
+	width: 269px;
+	height: 90px;
+	border-left: 1px solid #e6e6e6;
+	float: left;
+	text-align: center;
+}
+
+#contacts p
+{
+	font-family: "MuseoSansRegular";
+	font-size: 16px;
+	margin-top: 30px;
+}
+
+#contacts img
+{
+	vertical-align: middle;
+	padding-right: 20px;
+}
+
+#personal_account
+{
+	width: 249px;
+	height: 90px;
+	background-color: #007553;
+	float: left;
+	text-align: center;
+}
+
+#personal_account p
+{
+	font-family: "MuseoSansRegular";
+	font-size: 16px;
+	margin: 30px 0;
+	color: #fff;
+	z-index: 2;
+}
+
+#personal_account img
+{
+	vertical-align: middle;
+	padding-right: 20px;
+}
+
+#logged_checker{
+	width: 10px;
+	height: 10px;
+	background-color: #8ac176;
+	position: absolute;
+	border-radius: 50%;
+	margin: 20px 0 0 -28px;
+	display: none;
+}
+
+#personal_account .logging{
+	display: none;
+	position: relative;
+	background-color: #007553;
+	width: 249px;
+	z-index: 3;
+}
+
+#personal_account .logging a{
+	display: block;
+	color: #fff;
+	font-family: "MuseoSansRegular";
+	font-size: 16px;
+	padding: 20px 0;
+	text-decoration: none;
+}
+
+#personal_account .logging a:hover{
+	background-color: #F1A400;
+}
+
+#personal_account:hover .logging{
+	display: block;
+}
+
+#languages
+{
+	width: 70px;
+	height: 90px;
+	float: left;
+	text-align: center;
+}
+
+#languages select
+{
+	font: 15px "MuseoSansRegular";
+	width: 50px;
+	height: 26px;
+	margin-top: 30px;
+	border: none;
+	/*for webkit*/
+	-webkit-appearance: none;
+	/*for FireFox*/
+	-moz-appearance: none;
+	text-indent: 0.01px;
+	/*for IE*/
+	-ms-appearance: none;
+	appearance: none!important;
+    background-color: #fff;
+	background-size: 25%;
+	background-position: right center;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	text-align-last: center; /*for Google Chrome*/
+	text-align: center; /*for FireFox*/
+}
+
+/* font-family: "MuseoSansRegular"; */
+@font-face {
+    font-family: "MuseoSansRegular";
+    src: url("../fonts/MuseoSansRegular/MuseoSansRegular.eot");
+    src: url("../fonts/MuseoSansRegular/MuseoSansRegular.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/MuseoSansRegular/MuseoSansRegular.woff") format("woff"),
+    url("../fonts/MuseoSansRegular/MuseoSansRegular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/* font-family: "MuseoSansLight"; */
+@font-face {
+    font-family: "MuseoSansLight";
+    src: url("../fonts/MuseoSansLight/MuseoSansLight.eot");
+    src: url("../fonts/MuseoSansLight/MuseoSansLight.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/MuseoSansLight/MuseoSansLight.woff") format("woff"),
+    url("../fonts/MuseoSansLight/MuseoSansLight.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/*----------------------------------Sidebar styles----------------------------------*/
+#wrapper {
+  padding-left: 0;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+  padding-left: 270px;
+}
+
+#sidebar-wrapper {
+  z-index: 2;
+  position: fixed;
+  left: 270px;
+  width: 0;
+  height: 100%;
+  margin-left: -270px;
+  overflow-y: auto;
+  background: #007553;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  width: 270px;
+}
+
+#page-content-wrapper {
+  width: 100%;
+  position: absolute;
+  padding: 15px;
+}
+
+#overlay {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  background-color: rgba(0,0,0,.3);
+  cursor: pointer;
+}
+
+.sidebar-nav {
+  position: absolute;
+  top: 40px;
+  width: 270px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-nav li {
+  text-indent: 20px;
+  line-height: 40px;
+}
+
+.sidebar-nav li a {
+  display: block;
+  font-size: 18px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.sidebar-nav li a:hover {
+  text-decoration: none;
+  background: #F1A400;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+  text-decoration: none;
+}
+
+/*----------------------------------Heading styles----------------------------------*/
+#heading{
+	background-color: #fffaf1;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+#heading_content{
+	margin: 0 auto;
+	width: 1180px;
+	height: 144px;
+	background-color: #fffaf1;
+}
+
+#heading_content h1 {
+	padding-top: 56px;
+	font-size: 32px;
+}
+
+/*----------------------------------Main info styles----------------------------------*/
+#main_info{
+	background-color: #fff;
+	min-height: 500px;
+}
+
+#main_info_content{
+	margin: 0 auto;
+	width: 1180px;
+	padding: 60px 0;
+	background-color: #fff;
+}
+
+#main_info_content h1{
+	font-size: 25px;
+}
+
+
+
+#main_info_content th{
+	border-bottom: 2px solid #e9e9e9;
+	font-size: 13px;
+	padding-bottom: 28px;
+}
+
+#main_info_content td{
+	padding-top: 40px;
+	vertical-align: top;
+}
+
+#main_info_content td a{
+	color: #000;
+}
+
+#main_info_content td p{
+	padding-top: 22px;
+	font-size: 15px;
+}
+
+#main_info_content .td_img{
+	width: 240px;
+	height: 120px;
+	overflow: hidden;
+	padding-right: 60px;
+}
+
+#main_info .img_fit{
+	width:240px;
+	height:120px;
+	object-position:center;
+	object-fit:cover;
+}
+
+/*----------------------------------FlatOrders table styles----------------------------------*/
+#flat_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------HouseOrders table styles----------------------------------*/
+#house_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------ParkingOrders table styles----------------------------------*/
+#parking_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------LandOrders table styles----------------------------------*/
+#land_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------CommercialOrders table styles----------------------------------*/
+#commercial_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------IndustryOrders table styles----------------------------------*/
+#industry_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------AutoOrders table styles----------------------------------*/
+#auto_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------EquipmentOrders table styles----------------------------------*/
+#equipment_orders{
+	margin: 50px 0;
+	width: 100%;
+	text-align: left;
+}
+
+/*----------------------------------UpdateProfile styles----------------------------------*/
+#update_profile{
+	background-color: #e0f4d5;
+}
+
+#update_profile_content{
+	margin: 0 auto;
+	width: 500px;
+	padding: 50px 0 60px;
+	text-align: center;
+}
+
+#update_profile_content h1{
+	font-size: 28px;
+}
+
+#update_profile_content label{
+	display: none;
+}
+
+input[type=text], input[type=email], input[type=password]{	
+	width: 100%;
+	margin-top: 10px;
+	border: 1px solid #000;
+	padding: 20px 30px;
+}
+
+input[type=submit]{
+	width: 100%;
+	margin-top: 10px;
+	border: none;
+	background-color: #00805d;
+	color: white;
+	text-align: center;
+	padding: 22px 0;
+	cursor: pointer;
+	text-decoration: none;
+	font-family: "MuseoSansRegular";
+	font-weight: bold;
+}
+
+.errorlist{
+	margin-top: 10px;
+}
+
+/*----------------------------------Footer styles----------------------------------*/
+#footer{
+	background-color: #f3f6f9;
+	height: 160px;
+	font-size: 14px;
+}
+
+#footer_content{
+	margin: 0 auto;
+	padding-top: 60px;
+	width: 1180px;
+	background-color: #f3f6f9;
+}
+
+#footer_content ul{
+	margin: 0 auto;
+	padding-top: 60px;
+	width: 1180px;
+	background-color: #f3f6f9;
+	display: inline;
+}
+
+#footer_content ul li{
+	float: left;
+}
+
+#footer_content .social_buttons p{
+	color: #000;
+}
+
+#footer_content .social_buttons ul{
+	display: inline;
+}
+
+#footer_content .social_buttons ul li{
+	float: left;
+	padding-right: 10px;
+}
+
+.social_buttons{
+	width: 350px;
+}
+
+.certificates{
+	padding-right: 40px;
+}
+
+.certificates img{
+	padding-right: 30px;
+}
+
+.certificates img:first-child{
+	width: 128px;
+}
+
+.certificates img:last-child{
+	padding-right: 0px;
+}
+
+.license{
+	width: 300px;
+	line-height: 150%;
+	padding-right: 32px;
+}
+
+.creator{
+	padding-top: 45px;
+	width: 176px;
+}

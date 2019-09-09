@@ -1,0 +1,506 @@
+{% load static %}
+<html>
+<head>
+	<title>Залоговое имущество</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<link rel="stylesheet" href="{% static 'papp/css/reset.css' %}">
+	<link rel="stylesheet" href="{% static 'papp/css/account.css' %}">
+	<link rel="shortcut icon" href="{% static 'papp/imgs/favicon.ico' %}" type="image/x-icon">
+
+	<!--Sidebar part-->
+	<script src="{% static 'papp/js/jquery-3.1.1.js' %}"></script>
+	<script src="{% static 'papp/js/sidebar.js' %}"></script>
+
+	<!--Social buttons-->
+	<script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8"></script>
+
+</head>
+<body>
+	<div id="wrapper">
+
+		<div id="sidebar-wrapper">
+			<ul class="sidebar-nav">
+				<li><a href="/">Квартиры</a></li>
+				<li><a href="{% url 'house' %}">Жилые дома</a></li>
+				<li><a href="{% url 'parking' %}">Паркинги</a></li>
+				<li><a href="{% url 'land' %}">Земельные участки</a></li>
+				<li><a href="{% url 'commercial' %}">Коммерческая</a></li>
+				<li><a href="{% url 'industry' %}">Промбазы</a></li>
+				<li><a href="{% url 'auto' %}">Автомобили</a></li>
+				<li><a href="{% url 'equipment' %}">Спецтехника</a></li>
+			</ul>
+		</div>
+
+		<div id="overlay"></div>
+
+		<div class="page-content-wrapper">
+			<div id="header">
+				<div id="header_content">
+					<div id="menu">
+						<a href="javascript:void(0)" id="menu-toggle"><img src="{% static 'papp/imgs/menu.png' %}" alt="menu"></a>
+					</div>
+					<div id="logo">
+						<img src="{% static 'papp/imgs/logo.png' %}">
+					</div>
+					<div id="callcenter">
+						<p>+7 (727) <b>259 07 77</b><a href="javascript:void(0)"><img src="{% static 'papp/imgs/skype.png' %}" width="27px"></a></p>
+						<p><select name="city">
+							<option value="Almaty">Алматы</option>
+							<option value="Aktau">Актау</option>
+							<option value="Aktobe">Актобе</option>
+							<option value="Astana">Астана</option>
+							<option value="Atyrau">Атырау</option>
+							<option value="Zhezkazgan">Жезказган</option>
+							<option value="Karaganda">Караганда</option>
+							<option value="kokshetau">Кокшетау</option>
+							<option value="Kostanay">Костанай</option>
+							<option value="Kyzylorda">Кызылорда</option>
+							<option value="Pavlodar">Павлодар</option>
+							<option value="Petropavlovsk">Петропавловск</option>
+							<option value="Semey">Семей</option>
+							<option value="Taldykorgan">Талдыкорган</option>
+							<option value="Taraz">Тараз</option>
+							<option value="Uralsk">Уральск</option>
+							<option value="Ust-Kamenogorsk">Усть-Каменогорск</option>
+							<option value="Shymkent">Шымкент</option>
+						</select>
+						<img src="{% static 'papp/imgs/down.png' %}" width="14px" /></p>
+					</div>
+					<div id="contacts">
+						<p><img src="{% static 'papp/imgs/call.png' %}" width="27">Контакты</p>
+					</div>
+					<div id="personal_account">
+						<p><img src="{% static 'papp/imgs/personal_account.png' %}" width="30"><span id="logged_checker"></span>Личный кабинет</p>
+						<div class="logging">
+							<a id="logout" href="{% url 'logout_within_account' %}">Выйти</a>
+						</div>
+					</div>
+					<div id="languages">
+						<select name="languages">
+							<option>Ru</option>
+							<option>Kz</option>
+							<option>En</option>
+						</select><img src="{% static 'papp/imgs/down.png' %}" width="14px" />
+					</div>
+				</div>
+			</div>
+
+			<div id="heading">
+				<div id="heading_content">
+					<h1>Здравствуйте, {{request.user.first_name}}! {{success}}</h1>
+				</div>
+			</div>
+
+			<div id="main_info">
+				<div id="main_info_content">
+					<h1>Ваши заявки</h1>
+
+					{% if flatorders %}
+					<table id="flat_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Квартиры</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for flatorder in flatorders %}
+						<tr>
+							<td class="td_img">
+								{% if flatorder.content_object.image1 %}
+								<a href="{% url 'detail_flat' flatorder.content_object.id %}">
+									<img class="img_fit" src="{{ flatorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_flat' flatorder.content_object.id %}">{{ flatorder.content_object.roomNumber }} комнатная квартира</a>
+								<p>г. {{ flatorder.content_object.city }}, р. {{ flatorder.content_object.district }}, {{ flatorder.content_object.address }}</p>
+							</td>
+							{% if flatorder.suggested_price == 0 %}
+							<td>{{ flatorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ flatorder.content_object.price }} тг.</strike></br>
+								{{ flatorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ flatorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_flat_order' flatorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+					{% if houseorders %}
+					<table id="house_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Жилые дома</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for houseorder in houseorders %}
+						<tr>
+							<td class="td_img">
+								{% if houseorder.content_object.image1 %}
+								<a href="{% url 'detail_house' houseorder.content_object.id %}">
+									<img class="img_fit" src="{{ houseorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_house' houseorder.content_object.id %}">{{ houseorder.content_object.roomNumber }} комнатный жилой дом</a>
+								<p>г. {{ houseorder.content_object.city }}, р. {{ houseorder.content_object.district }}, {{ houseorder.content_object.address }}</p>
+							</td>
+							{% if houseorder.suggested_price == 0 %}
+							<td>{{ houseorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ houseorder.content_object.price }} тг.</strike></br>
+								{{ houseorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ houseorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_house_order' houseorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+					{% if parkingorders %}
+					<table id="parking_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Паркинги</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for parkingorder in parkingorders %}
+						<tr>
+							<td class="td_img">
+								{% if parkingorder.content_object.image1 %}
+								<a href="{% url 'detail_parking' parkingorder.content_object.id %}">
+									<img class="img_fit" src="{{ parkingorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_parking' parkingorder.content_object.id %}">{{ parkingorder.content_object.roomNumber }} комнатная квартира</a>
+								<p>г. {{ parkingorder.content_object.city }}, р. {{ parkingorder.content_object.district }}, {{ parkingorder.content_object.address }}</p>
+							</td>
+							{% if parkingorder.suggested_price == 0 %}
+							<td>{{ parkingorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ parkingorder.content_object.price }} тг.</strike></br>
+								{{ parkingorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ parkingorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_parking_order' parkingorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+					{% if landorders %}
+					<table id="land_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Земельные участки</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for landorder in landorders %}
+						<tr>
+							<td class="td_img">
+								{% if landorder.content_object.image1 %}
+								<a href="{% url 'detail_land' landorder.content_object.id %}">
+									<img class="img_fit" src="{{ landorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_land' landorder.content_object.id %}">Земельный участок</a>
+								<p>г. {{ landorder.content_object.city }}, р. {{ landorder.content_object.district }}, {{ landorder.content_object.address }}</p>
+							</td>
+							{% if landorder.suggested_price == 0 %}
+							<td>{{ landorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ landorder.content_object.price }} тг.</strike></br>
+								{{ landorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ landorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_land_order' landorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+					{% if commercialorders %}
+					<table id="commercial_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Коммерческие объекты</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for commercialorder in commercialorders %}
+						<tr>
+							<td class="td_img">
+								{% if commercialorder.content_object.image1 %}
+								<a href="{% url 'detail_commercial' commercialorder.content_object.id %}">
+									<img class="img_fit" src="{{ commercialorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_commercial' commercialorder.content_object.id %}">Коммерческий объект</a>
+								<p>г. {{ commercialorder.content_object.city }}, р. {{ commercialorder.content_object.district }}, {{ commercialorder.content_object.address }}</p>
+							</td>
+							{% if commercialorder.suggested_price == 0 %}
+							<td>{{ commercialorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ commercialorder.content_object.price }} тг.</strike></br>
+								{{ commercialorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ commercialorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_commercial_order' commercialorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+					{% if industryorders %}
+					<table id="industry_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Промышленные объекты</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for industryorder in industryorders %}
+						<tr>
+							<td class="td_img">
+								{% if industryorder.content_object.image1 %}
+								<a href="{% url 'detail_industry' industryorder.content_object.id %}">
+									<img class="img_fit" src="{{ industryorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_industry' industryorder.content_object.id %}">Промышленный объект</a>
+								<p>г. {{ industryorder.content_object.city }}, р. {{ industryorder.content_object.district }}, {{ industryorder.content_object.address }}</p>
+							</td>
+							{% if industryorder.suggested_price == 0 %}
+							<td>{{ industryorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ industryorder.content_object.price }} тг.</strike></br>
+								{{ industryorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ industryorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_industry_order' industryorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+					{% if autoorders %}
+					<table id="auto_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Автомобили</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for autoorder in autoorders %}
+						<tr>
+							<td class="td_img">
+								{% if autoorder.content_object.image1 %}
+								<a href="{% url 'detail_auto' autoorder.content_object.id %}">
+									<img class="img_fit" src="{{ autoorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_auto' autoorder.content_object.id %}">{{ autoorder.content_object.brand }}, {{ autoorder.content_object.model }}</a>
+								<p>г. {{ autoorder.content_object.city }}, {{ autoorder.content_object.color }}, {{ autoorder.content_object.manfYear }} года выпуска, {{ autoorder.content_object.transmission }}, {{ autoorder.content_object.engineCapacity }} л.</p>
+							</td>
+							{% if autoorder.suggested_price == 0 %}
+							<td>{{ autoorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ autoorder.content_object.price }} тг.</strike></br>
+								{{ autoorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ autoorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_auto_order' autoorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+					{% if equipmentorders %}
+					<table id="equipment_orders">
+						<tr>
+							<th style="width:300px;">Фото</th>
+							<th style="width:400px;">Спецтехника</th>
+							<th style="width:200px;">Стоимость</th>
+							<th style="width:240px;">Дата заявки</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for equipmentorder in equipmentorders %}
+						<tr>
+							<td class="td_img">
+								{% if equipmentorder.content_object.image1 %}
+								<a href="{% url 'detail_equipment' equipmentorder.content_object.id %}">
+									<img class="img_fit" src="{{ equipmentorder.content_object.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_equipment' equipmentorder.content_object.id %}">{{ equipmentorder.content_object.brand }}</a>
+								<p>г. {{ equipmentorder.content_object.city }}, {{ equipmentorder.content_object.color }}, {{ equipmentorder.content_object.manfYear }} года выпуска, {{ equipmentorder.content_object.equipmentType }}, {{ equipmentorder.content_object.fuelType }}</p>
+							</td>
+							{% if equipmentorder.suggested_price == 0 %}
+							<td>{{ equipmentorder.content_object.price }} тг.</td>
+							{% else %}
+							<td>
+								<strike>{{ equipmentorder.content_object.price }} тг.</strike></br>
+								{{ equipmentorder.suggested_price }} тг.
+							</td>
+							{% endif %}
+							<td>{{ equipmentorder.order_date }}</td>
+							<td>
+								<a href="{% url 'delete_equipment_order' equipmentorder.id %}">
+									<img src="{% static 'papp/imgs/delete.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+				</div>
+			</div>
+
+			<div id="update_profile">
+				<div id="update_profile_content">
+					<h1>Редактировать профиль</h1>
+					<form method='POST' action=''>{% csrf_token %}
+						<p>{{success}}</p>
+						{{update_form}}
+						<input type="submit" value="{{update_title}}">
+					</form>
+				</div>
+			</div>
+
+			<div id="footer">
+				<div id="footer_content">
+					<ul>
+						<li>
+							<div class="social_buttons">
+								<p style="padding-bottom: 28px;">&copy;АО Народный Банк Казахстана 2008-2016</p>
+								<ul>
+									<li><script type="text/javascript">
+										document.write(VK.Share.button({
+											url: 'http://mysite.com', 
+											title: 'Мой классный сайт'
+										}, 
+										{
+											type: 'round',
+											text: '&#x2764;'
+										})); 
+									</script></li>
+									<li><iframe src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&layout=button_count&size=small&mobile_iframe=true&width=140&height=20&appId" width="140" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe></li>
+									<li><a href="https://twitter.com/share" class="twitter-share-button">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
+								</ul>
+							</div>
+						</li>
+
+						<li>
+							<div class="certificates">
+								<img src="{% static 'papp/imgs/bsi-mark-iso.png' %}"/>
+								<img src="{% static 'papp/imgs/banner_pci.png' %}"/>
+							</div>
+						</li>
+
+						<li>
+							<div class="license">
+								<p>Лицензия на проведение банковских и иных операций и деятельности на рынке ценных бумаг номер 10 от 6 августа 2008 года</p>
+							</div>
+						</li>
+
+						<li>
+							<div class="creator">
+								<p>Создание сайта - Amphibia</p>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Смена drop down в зависимости от сессии
+		$(document).ready(function(){
+			loggedin_bool = false;
+			loggedin_str = '{{request.session.username}}';
+			if(loggedin_str) loggedin_bool = true;
+
+			if(loggedin_bool){
+				$('#logged_checker').css({
+					'display': 'inline'
+				});
+			}
+		});
+	</script>
+
+</body>
+</html> 

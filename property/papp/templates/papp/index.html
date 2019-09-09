@@ -1,0 +1,502 @@
+{% load static %}
+<html>
+<head>
+	<title>Залоговое имущество</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<link rel="stylesheet" href="{% static 'papp/css/reset.css' %}">
+	<link rel="stylesheet" href="{% static 'papp/css/index.css' %}">
+	<link rel="shortcut icon" href="{% static 'papp/imgs/favicon.ico' %}" type="image/x-icon">
+
+	<!--Sidebar part-->
+	<script src="{% static 'papp/js/jquery-3.1.1.js' %}"></script>
+	<script src="{% static 'papp/js/sidebar.js' %}"></script>
+
+	<!--Slider jquery-->
+	<link rel="stylesheet" href="{% static 'papp/css/jquery-ui.css' %}">
+	<script src="{% static 'papp/js/jquery-ui.js' %}"></script>
+	<script src="{% static 'papp/js/slider_ranges.js' %}"></script>
+
+	<!--Google Maps-->
+	<script src="{% static 'papp/js/markerclusterer.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'papp/css/map_styles.css' %}">
+
+	<!--Social buttons-->
+	<script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8"></script>
+
+</head>
+<body>
+	<div id="wrapper">
+
+		<div id="sidebar-wrapper">
+			<ul class="sidebar-nav">
+				<li><a href="/">Квартиры</a></li>
+				<li><a href="{% url 'house' %}">Жилые дома</a></li>
+				<li><a href="{% url 'parking' %}">Паркинги</a></li>
+				<li><a href="{% url 'land' %}">Земельные участки</a></li>
+				<li><a href="{% url 'commercial' %}">Коммерческая</a></li>
+				<li><a href="{% url 'industry' %}">Промбазы</a></li>
+				<li><a href="{% url 'auto' %}">Автомобили</a></li>
+				<li><a href="{% url 'equipment' %}">Спецтехника</a></li>
+			</ul>
+		</div>
+
+		<div id="overlay"></div>
+
+		<div class="page-content-wrapper">
+			<div id="header">
+				<div id="header_content">
+					<div id="menu">
+						<a href="javascript:void(0)" id="menu-toggle"><img src="{% static 'papp/imgs/menu.png' %}" alt="menu"></a>
+					</div>
+					<div id="logo">
+						<img src="{% static 'papp/imgs/logo.png' %}">
+					</div>
+					<div id="callcenter">
+						<p>+7 (727) <b>259 07 77</b><a href="javascript:void(0)"><img src="{% static 'papp/imgs/skype.png' %}" width="27px"></a></p>
+						<p><select name="city">
+							<option value="Almaty">Алматы</option>
+							<option value="Aktau">Актау</option>
+							<option value="Aktobe">Актобе</option>
+							<option value="Astana">Астана</option>
+							<option value="Atyrau">Атырау</option>
+							<option value="Zhezkazgan">Жезказган</option>
+							<option value="Karaganda">Караганда</option>
+							<option value="kokshetau">Кокшетау</option>
+							<option value="Kostanay">Костанай</option>
+							<option value="Kyzylorda">Кызылорда</option>
+							<option value="Pavlodar">Павлодар</option>
+							<option value="Petropavlovsk">Петропавловск</option>
+							<option value="Semey">Семей</option>
+							<option value="Taldykorgan">Талдыкорган</option>
+							<option value="Taraz">Тараз</option>
+							<option value="Uralsk">Уральск</option>
+							<option value="Ust-Kamenogorsk">Усть-Каменогорск</option>
+							<option value="Shymkent">Шымкент</option>
+						</select>
+						<img src="{% static 'papp/imgs/down.png' %}" width="14px" /></p>
+					</div>
+					<div id="contacts">
+						<p><img src="{% static 'papp/imgs/call.png' %}" width="27">Контакты</p>
+					</div>
+					<div id="personal_account">
+						<p><img src="{% static 'papp/imgs/personal_account.png' %}" width="30"><span id="logged_checker"></span>Личный кабинет</p>
+						<div class="logging">
+							<form method='GET' action="{% url 'login' %}">
+    							{% csrf_token %}
+    							<input type="hidden" name="next" value="{{request.path}}">
+    							<button type="submit">Войти</button>
+							</form>
+							<form method='GET' action="{% url 'register' %}">
+    							{% csrf_token %}
+    							<input type="hidden" name="next" value="{{request.path}}">
+    							<button type="submit">Регистрация</button>
+							</form>
+						</div>
+					</div>
+					<div id="languages">
+						<select name="languages">
+							<option>Ru</option>
+							<option>Kz</option>
+							<option>En</option>
+						</select><img src="{% static 'papp/imgs/down.png' %}" width="14px" />
+					</div>
+				</div>
+			</div>
+
+			<div id="heading">
+				<div id="heading_content">
+					<h1>Залоговое имущество</h1>
+					<ul>
+						<li><a class="active" href="javascript:void(0)">Продажа</a></li>
+						<li><a href="javascript:void(0)">Правила</a></li>
+						<li><a href="javascript:void(0)">Вопрос-ответ</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div id="popular">
+				<div id="popular_content">
+					{% if flats_popular %}
+					<ul>
+					{% for flat_popular in flats_popular %}
+						<li>
+							<div>
+								<a href="{% url 'detail_flat' flat_popular.id %}">
+									<div class="overlay"></div>
+								</a>
+								<img src="{{ flat_popular.image1.url }}"/>
+								<span>
+									<p>{{ flat_popular.price }} тг</p>
+								</span>
+								<strong><p class="item_popular_address_highlighted">{{ flat_popular.address }}</p></strong>
+								<p class="item_popular_description">г. {{ flat_popular.city }}, {{ flat_popular.district }} район, {{ flat_popular.roomNumber }} комнатная, {{ flat_popular.storey }} этаж, {{ flat_popular.area }} м<sup>2</sup></p>
+							</div>
+					{% endfor %}
+					</ul>
+					{% endif %}
+				</div>
+			</div>
+
+			<div id="sorting">
+				<div id="sorting_content">
+					<form action="" method="POST">{% csrf_token %}
+
+						<div id="property_type">
+							<label class="sorting_label">Вид имущества</label>
+							<div>
+								<select class ="sorting_select" name="property_type" onchange="javascript:location.href=this.value;">
+									<option>Квартира</option>
+									<option value="{% url 'house' %}">Жилые дома</option>
+									<option value="{% url 'land' %}">Земельные участки</option>
+									<option value="{% url 'parking' %}">Паркинг</option>
+									<option value="{% url 'commercial' %}">Коммерческая</option>
+									<option value="{% url 'industry' %}">Промбазы</option>
+									<option value="{% url 'auto' %}">Автомобили</option>
+									<option value="{% url 'equipment' %}">Спецтехника</option>
+								</select><img src="{% static 'papp/imgs/down.png' %}" width="14px"/>
+							</div>
+						</div>
+
+						<div id="city">
+							<label class="sorting_label">Город</label>
+							<div>
+								<select select class ="sorting_select" name="city">
+									<option value="Алматы">Алматы</option>
+									<option value="Актау">Актау</option>
+									<option value="Актобе">Актобе</option>
+									<option value="Астана">Астана</option>
+									<option value="Атырау">Атырау</option>
+									<option value="Жезказган">Жезказган</option>
+									<option value="Караганда">Караганда</option>
+									<option value="Кокшетау">Кокшетау</option>
+									<option value="Костанай">Костанай</option>
+									<option value="Кызылорда">Кызылорда</option>
+									<option value="Павлодар">Павлодар</option>
+									<option value="Петропавловск">Петропавловск</option>
+									<option value="Семей">Семей</option>
+									<option value="Талдыкорган">Талдыкорган</option>
+									<option value="Тараз">Тараз</option>
+									<option value="Ура">Уральск</option>
+									<option value="Усть-Каменогорск">Усть-Каменогорск</option>
+									<option value="Шымкент">Шымкент</option>
+								</select><img src="{% static 'papp/imgs/down.png' %}" width="14px"/>
+							</div>
+						</div>
+
+						<div id="area">
+							<label class="sorting_label">Общая площадь, м&sup2;</label>
+							<div class="input_labels">
+								<input type="text" id="area_min" readonly name="area_min" class="input_readonly">
+								<input type="text" id="area_max" readonly style="text-align:right;" name="area_max" class="input_readonly">
+							</div>
+							<div id="slider_range_area"></div>
+						</div>
+
+						<div id="price">
+							<label class="sorting_label">Стоимость, тг</label>
+							<div class="input_labels">
+								<input type="text" id="price_min" readonly name="price_min" class="input_readonly">
+								<input type="text" id="price_max" readonly style="text-align:right;" name="price_max" class="input_readonly">
+							</div>
+							<div id="slider_range_price"></div>
+						</div>
+
+						<div id="constYear">
+							<label class="sorting_label">Год постройки, г</label>
+							<div class="input_labels">
+								<input type="text" id="constYear_min" readonly name="constYear_min" class="input_readonly">
+								<input type="text" id="constYear_max" readonly style="text-align:right;" name="constYear_max" class="input_readonly">
+							</div>
+							<div id="slider_range_constYear"></div>
+						</div>
+
+						<div id="roomNumber">
+							<label class="sorting_label">Количество комнат</label>
+							<div>
+								<select class ="sorting_select" name="roomNumber">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="5+">5+</option>
+								</select><img src="{% static 'papp/imgs/down.png' %}" width="14px" />
+							</div>
+						</div>
+
+						<div id="storey">
+							<label class="sorting_label">Этаж</label>
+							<div>
+								<select class ="sorting_select" name="storey">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
+									<option value="16">16</option>
+									<option value="17">17</option>
+									<option value="18">18</option>
+									<option value="19">19</option>
+									<option value="20">20</option>
+									<option value="21">21</option>
+									<option value="22">22</option>
+									<option value="23">23</option>
+									<option value="24">24</option>
+									<option value="25">25</option>
+								</select><img src="{% static 'papp/imgs/down.png' %}" width="14px" />
+							</div>
+						</div>
+
+						<input type="submit" value="НАЙТИ" class="search" style="padding:23px 72px;margin: 65px 0 60px;">
+					</form>
+				</div>
+			</div>
+
+			<div id="results">
+				<div id="results_content">
+					<p>Найдено объектов: {{ flats.count }}
+						<span>
+							<a id="btn_map" href="javascript:void(0)">На карте
+							<a id="btn_table" href="javascript:void(0)" class="results_active">Списком</a>
+						</span>
+					</p>
+
+					{% if flats %}
+					<table id="results_table">
+						<tr>
+							<th>Фото</th>
+							<th style="width:400px;">Вид имущества и адрес</th>
+							<th style="width:200px;">Общая площадь, м&sup2;</th>
+							<th style="width:285px;">Стоимость, тг</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for flat in flats %}
+						<tr>
+							<td class="td_img">
+								{% if flat.image1 %}
+								<a href="{% url 'detail_flat' flat.id %}">
+									<img class="img_fit" src="{{ flat.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_flat' flat.id %}">{{ flat.roomNumber }} комнатная квартира</a>
+								<p>г. {{ flat.city }}, р. {{ flat.district }}, {{ flat.address }}</p>
+							</td>
+							<td style="font-size:17px;">{{ flat.area }}</td>
+							<td>{{ flat.price }}</td>
+							<td>
+								<a href="{% url 'detail_flat' flat.id %}" >
+									<img src="{% static 'papp/imgs/next.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+				</div>
+			</div>
+
+			<div id="map-canvas" class="results_dont_display"></div>
+
+			<div id="footer">
+				<div id="footer_content">
+					<ul>
+						<li>
+							<div class="social_buttons">
+								<p style="padding-bottom: 28px;">&copy;АО Народный Банк Казахстана 2008-2016</p>
+								<ul>
+									<li><script type="text/javascript">
+										document.write(VK.Share.button({
+											url: 'http://mysite.com', 
+											title: 'Мой классный сайт'
+										}, 
+										{
+											type: 'round',
+											text: '&#x2764;'
+										})); 
+									</script></li>
+									<li><iframe src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&layout=button_count&size=small&mobile_iframe=true&width=140&height=20&appId" width="140" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe></li>
+									<li><a href="https://twitter.com/share" class="twitter-share-button">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
+								</ul>
+							</div>
+						</li>
+
+						<li>
+							<div class="certificates">
+								<img src="{% static 'papp/imgs/bsi-mark-iso.png' %}"/>
+								<img src="{% static 'papp/imgs/banner_pci.png' %}"/>
+							</div>
+						</li>
+
+						<li>
+							<div class="license">
+								<p>Лицензия на проведение банковских и иных операций и деятельности на рынке ценных бумаг номер 10 от 6 августа 2008 года</p>
+							</div>
+						</li>
+
+						<li>
+							<div class="creator">
+								<p>Создание сайта - Amphibia</p>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Смена drop down в зависимости от сессии
+		$(document).ready(function(){
+			loggedin_bool = false;
+			loggedin_str = '{{request.session.username}}';
+			if(loggedin_str) loggedin_bool = true;
+
+			if(loggedin_bool){
+				$('.logging').html(
+					'<a id="pass" href="{% url 'account' %}">Перейти</a>' + 
+					'<a id="logout" href="{% url 'logout' %}">Выйти</a>'
+				);
+				$('#logged_checker').css({
+					'display': 'inline'
+				});
+			}
+		});
+	</script>
+
+	<script type="text/javascript">
+		$(window).scroll(function(){
+			sessionStorage.scroll = Number($(window).scrollTop());
+		});
+		$(document).ready(function(){
+			// scrolling to previous place
+			if(sessionStorage.scroll != 'undefined'){
+				$(window).scrollTop(Number(sessionStorage.scroll));
+			}
+
+			$("#heading_content li a").click(function(){
+				$("#heading_content li .active").removeClass("active");
+				$(this).addClass("active");
+			});
+
+			// Dynamically changing content of page
+			$("#btn_map").click(function(){
+				$("#results_table").hide();
+				$("#map-canvas").show();
+				$("#btn_table").removeClass("results_active");
+				$(this).addClass("results_active");
+			});
+
+			$("#btn_table").click(function(){
+				$("#map-canvas").hide();
+				$("#results_table").show();
+				$("#btn_map").removeClass("results_active");
+				$(this).addClass("results_active");
+			});
+		});
+	</script>
+	
+	<script async defer src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyBpARR_fhfMfpwhbhTe6Srku9MP-O2LOaQ&sensor=false&callback=initMap"></script>
+
+	<script type="text/javascript">
+		var map;
+		var infoWindow;
+		var markerCluster;
+		var markers = [];
+		var kz = {lat: 48.5657082, lng: 69.19635}
+
+		function initMap(){
+			var myOptions = {
+				zoom: 5,
+				center: kz,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				scrollwheel: false
+			}
+			map = new google.maps.Map(document.getElementById("map-canvas"),myOptions);
+			var point;
+
+			{% if flats %}
+			{% for geopoint in flats %}
+			point = new google.maps.LatLng({{geopoint.position.latitude}},{{geopoint.position.longitude}});
+  			var content = 	'<div id="iw-container">' +
+                    			'<div class="iw-title"><div class="iw-overlay"></div><img src="{{geopoint.image1.url}}" /></div>' +
+                    			'<div class="iw-content">' +
+                      				'<div class="iw-subTitle">{{geopoint.roomNumber}}-х ком.квартира</div>' +
+                      				'<p>г.{{geopoint.city}}, р.{{geopoint.district}}, {{geopoint.address}}</p>' +
+                      				'<a href="{% url 'detail_flat' geopoint.id %}">ПОДРОБНЕЕ</a>' + 
+                    			'</div>' +
+                    			'<div class="iw-bottom-gradient"></div>' +
+                  			'</div>';
+			createMarker(point, content);
+			{% endfor %}
+			{% endif %}
+
+			markerCluster = new MarkerClusterer(map, markers, {
+				styles: [{
+					height: 50,
+					width: 50,
+					url: '{% static "papp/imgs/marker_group.png" %}',
+				}]
+			});
+		}
+
+		function createMarker(latlng, infoData){
+			var marker = new google.maps.Marker({
+				position: latlng,
+				icon: '{% static 'papp/imgs/marker.png' %}'
+			});
+			var infoWindow = new google.maps.InfoWindow();
+			google.maps.event.addListener(infoWindow, 'domready', function() {
+
+    			// Reference to the DIV that wraps the bottom of infowindow
+    			var iwOuter = $('.gm-style-iw');
+
+    			/* Since this div is in a position prior to .gm-div style-iw.
+    			 * We use jQuery and create a iwBackground variable,
+    			 * and took advantage of the existing reference .gm-style-iw for the previous div with .prev().
+    			 */
+    			var iwBackground = iwOuter.prev();
+    			iwBackground.children(':nth-child(2)').css({'display' : 'none', });
+    			iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+    			iwOuter.parent().parent().css({left: '20px'});
+    			iwBackground.children(':nth-child(1)').css({'display' : 'none'});
+    			iwBackground.children(':nth-child(3)').attr('style', function(i,s){ return s + 'left: 120px !important;'});
+    			iwBackground.children(':nth-child(3)').find('div').children().css({'z-index' : '1'});
+    			var iwCloseBtn = iwOuter.next();
+    			iwCloseBtn.css({opacity: '.7', right: '53px', top: '15px'});
+
+    			if($('.iw-content').height() < 140){
+      				$('.iw-bottom-gradient').css({display: 'none'});
+    			}
+
+    			iwCloseBtn.mouseout(function(){
+      			$(this).css({opacity: '1'});
+    			});
+    			iwCloseBtn.mouseout(function(){
+      			$(this).css({opacity: '.7'});
+    			});
+  			});
+			google.maps.event.addListener(marker, 'click', function(){
+				infoWindow.setContent(infoData);
+				infoWindow.open(map, marker);
+			});
+			markers.push(marker);
+		}
+	</script>
+</body>
+</html> 

@@ -1,0 +1,29 @@
+{% load static %}
+<html>
+<head>
+	<title>Залоговое имущество</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<link rel="stylesheet" href="{% static 'papp/css/reset.css' %}">
+	<link rel="stylesheet" href="{% static 'papp/css/authentication.css' %}">
+	<link rel="shortcut icon" href="{% static 'papp/imgs/favicon.ico' %}" type="image/x-icon">
+
+</head>
+<body>
+	<div id="modal">
+		<div id="modal_content">
+			<p>Регистрация</p>
+			<form method='POST' action="">{% csrf_token %}
+				{{reg_form}}
+				<input id="signin" type="submit" value="{{reg_title}}">
+			</form>
+			<form method='GET' action="{% url 'login' %}">
+    			{% csrf_token %}
+    			<input type="hidden" name="next" value="{{next}}">
+    			<button type="submit">Есть аккаунт? Войти</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html> 

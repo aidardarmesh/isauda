@@ -1,0 +1,379 @@
+{% load static %}
+<html>
+<head>
+	<title>Залоговое имущество</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<link rel="stylesheet" href="{% static 'papp/css/reset.css' %}">
+	<link rel="stylesheet" href="{% static 'papp/css/auto.css' %}">
+	<link rel="shortcut icon" href="{% static 'papp/imgs/favicon.ico' %}" type="image/x-icon">
+
+	<!--Sidebar part-->
+	<script src="{% static 'papp/js/jquery-3.1.1.js' %}"></script>
+	<script src="{% static 'papp/js/sidebar.js' %}"></script>
+
+	<!--Slider jquery-->
+	<link rel="stylesheet" href="{% static 'papp/css/jquery-ui.css' %}">
+	<script src="{% static 'papp/js/jquery-ui.js' %}"></script>
+	<script src="{% static 'papp/js/slider_ranges.js' %}"></script>
+
+	<!--Google Maps-->
+	<script src="{% static 'papp/js/markerclusterer.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'papp/css/map_styles.css' %}">
+
+	<!--Social buttons-->
+	<script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8"></script>
+
+</head>
+<body>
+	<div id="wrapper">
+
+		<div id="sidebar-wrapper">
+			<ul class="sidebar-nav">
+				<li><a href="/">Квартиры</a></li>
+				<li><a href="{% url 'house' %}">Жилые дома</a></li>
+				<li><a href="{% url 'parking' %}">Паркинги</a></li>
+				<li><a href="{% url 'land' %}">Земельные участки</a></li>
+				<li><a href="{% url 'commercial' %}">Коммерческая</a></li>
+				<li><a href="{% url 'industry' %}">Промбазы</a></li>
+				<li><a href="{% url 'auto' %}">Автомобили</a></li>
+				<li><a href="{% url 'equipment' %}">Спецтехника</a></li>
+			</ul>
+		</div>
+
+		<div id="overlay"></div>
+
+		<div class="page-content-wrapper">
+			<div id="header">
+				<div id="header_content">
+					<div id="menu">
+						<a href="javascript:void(0)" id="menu-toggle"><img src="{% static 'papp/imgs/menu.png' %}" alt="menu"></a>
+					</div>
+					<div id="logo">
+						<img src="{% static 'papp/imgs/logo.png' %}">
+					</div>
+					<div id="callcenter">
+						<p>+7 (727) <b>259 07 77</b><a href="javascript:void(0)"><img src="{% static 'papp/imgs/skype.png' %}" width="27px"></a></p>
+						<p><select name="city">
+							<option value="Almaty">Алматы</option>
+							<option value="Aktau">Актау</option>
+							<option value="Aktobe">Актобе</option>
+							<option value="Astana">Астана</option>
+							<option value="Atyrau">Атырау</option>
+							<option value="Zhezkazgan">Жезказган</option>
+							<option value="Karaganda">Караганда</option>
+							<option value="kokshetau">Кокшетау</option>
+							<option value="Kostanay">Костанай</option>
+							<option value="Kyzylorda">Кызылорда</option>
+							<option value="Pavlodar">Павлодар</option>
+							<option value="Petropavlovsk">Петропавловск</option>
+							<option value="Semey">Семей</option>
+							<option value="Taldykorgan">Талдыкорган</option>
+							<option value="Taraz">Тараз</option>
+							<option value="Uralsk">Уральск</option>
+							<option value="Ust-Kamenogorsk">Усть-Каменогорск</option>
+							<option value="Shymkent">Шымкент</option>
+						</select>
+						<img src="{% static 'papp/imgs/down.png' %}" width="14px" /></p>
+					</div>
+					<div id="contacts">
+						<p><img src="{% static 'papp/imgs/call.png' %}" width="27">Контакты</p>
+					</div>
+					<div id="personal_account">
+						<p><img src="{% static 'papp/imgs/personal_account.png' %}" width="30"><span id="logged_checker"></span>Личный кабинет</p>
+						<div class="logging">
+							<form method='GET' action="{% url 'login' %}">
+    							{% csrf_token %}
+    							<input type="hidden" name="next" value="{{request.path}}">
+    							<button type="submit">Войти</button>
+							</form>
+							<form method='GET' action="{% url 'register' %}">
+    							{% csrf_token %}
+    							<input type="hidden" name="next" value="{{request.path}}">
+    							<button type="submit">Регистрация</button>
+							</form>
+						</div>
+					</div>
+					<div id="languages">
+						<select name="languages">
+							<option>Ru</option>
+							<option>Kz</option>
+							<option>En</option>
+						</select><img src="{% static 'papp/imgs/down.png' %}" width="14px" />
+					</div>
+				</div>
+			</div>
+
+			<div id="heading">
+				<div id="heading_content">
+					<h1>Залоговое имущество</h1>
+					<ul>
+						<li><a class="active" href="javascript:void(0)">Продажа</a></li>
+						<li><a href="javascript:void(0)">Правила</a></li>
+						<li><a href="javascript:void(0)">Вопрос-ответ</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div id="popular">
+				<div id="popular_content">
+					{% if equipments_popular %}
+					<ul>
+					{% for equipment_popular in equipments_popular %}
+						<li>
+							<div>
+								<a href="{% url 'detail_equipment' equipment_popular.id %}">
+									<div class="overlay"></div>
+								</a>
+								<img src="{{ equipment_popular.image1.url }}"/>
+								<span>
+									<p>{{ equipment_popular.price }} тг</p>
+								</span>
+								<strong><p class="item_popular_address_highlighted">{{ equipment_popular.brand }}</p></strong>
+								<p class="item_popular_description">г. {{ equipment_popular.city }}, {{ equipment_popular.equipmentType }}, {{ equipment_popular.fuelType }}</p>
+							</div>
+					{% endfor %}
+					</ul>
+					{% endif %}
+				</div>
+			</div>
+
+			<div id="sorting">
+				<div id="sorting_content">
+					<form action="" method="POST">{% csrf_token %}
+
+						<div id="property_type">
+							<label class="sorting_label">Вид имущества</label>
+							<div>
+								<select class ="sorting_select" name="property_type" onchange="javascript:location.href=this.value;">
+									<option>Спецтехника</option>
+									<option value="{% url 'auto' %}">Автомобили</option>
+									<option value="/">Квартира</option>
+									<option value="{% url 'house' %}">Жилые дома</option>
+									<option value="{% url 'land' %}">Земельные участки</option>
+									<option value="{% url 'parking' %}">Паркинг</option>
+									<option value="{% url 'commercial' %}">Коммерческая</option>
+									<option value="{% url 'industry' %}">Промбазы</option>
+								</select><img src="{% static 'papp/imgs/down.png' %}" width="14px"/>
+							</div>
+						</div>
+
+						<div id="city">
+							<label class="sorting_label">Город</label>
+							<div>
+								<select select class ="sorting_select" name="city">
+									<option value="Алматы">Алматы</option>
+									<option value="Актау">Актау</option>
+									<option value="Актобе">Актобе</option>
+									<option value="Астана">Астана</option>
+									<option value="Атырау">Атырау</option>
+									<option value="Жезказган">Жезказган</option>
+									<option value="Караганда">Караганда</option>
+									<option value="Кокшетау">Кокшетау</option>
+									<option value="Костанай">Костанай</option>
+									<option value="Кызылорда">Кызылорда</option>
+									<option value="Павлодар">Павлодар</option>
+									<option value="Петропавловск">Петропавловск</option>
+									<option value="Семей">Семей</option>
+									<option value="Талдыкорган">Талдыкорган</option>
+									<option value="Тараз">Тараз</option>
+									<option value="Ура">Уральск</option>
+									<option value="Усть-Каменогорск">Усть-Каменогорск</option>
+									<option value="Шымкент">Шымкент</option>
+								</select><img src="{% static 'papp/imgs/down.png' %}" width="14px"/>
+							</div>
+						</div>
+
+						<div id="color">
+							<label class="sorting_label">Цвет</label>
+							<div>
+								<select select class ="sorting_select" name="color">
+									<option value="бронза">бронза</option>
+									<option value="вишня">вишня</option>
+									<option value="хамелеон">хамелеон</option>
+									<option value="бежевый">бежевый</option>
+									<option value="белый">белый</option>
+									<option value="бирюзовый">бирюзовый</option>
+									<option value="бордовый">бордовый</option>
+									<option value="голубой">голубой</option>
+									<option value="жёлтый">жёлтый</option>
+									<option value="зелёный">зелёный</option>
+									<option value="золотистый">золотистый</option>
+									<option value="коричневый">коричневый</option>
+									<option value="красный">красный</option>
+									<option value="оранжевый">оранжевый</option>
+									<option value="розовый">розовый</option>
+									<option value="серебристый">серебристый</option>
+									<option value="серый">серый</option>
+									<option value="синий">синий</option>
+									<option value="сиреневый">сиреневый</option>
+									<option value="фиолетовый">фиолетовый</option>
+									<option value="чёрный">чёрный</option>
+								</select><img src="{% static 'papp/imgs/down.png' %}" width="14px"/>
+							</div>
+						</div>
+
+						<div id="price">
+							<label class="sorting_label">Стоимость, тг</label>
+							<div class="input_labels">
+								<input type="text" id="price_min" readonly name="price_min" class="input_readonly">
+								<input type="text" id="price_max" readonly style="text-align:right;" name="price_max" class="input_readonly">
+							</div>
+							<div id="slider_range_price"></div>
+						</div>
+
+						<div id="manufYear">
+							<label class="sorting_label">Год выпуска, г</label>
+							<div class="input_labels">
+								<input type="text" id="manufYear_min" readonly name="manufYear_min" class="input_readonly">
+								<input type="text" id="manufYear_max" readonly style="text-align:right;" name="manufYear_max" class="input_readonly">
+							</div>
+							<div id="slider_range_manufYear"></div>
+						</div><br>
+
+						<input type="submit" value="НАЙТИ" class="search" style="padding:23px 72px;margin: 65px 0 60px;">
+					</form>
+				</div>
+			</div>
+
+			<div id="results">
+				<div id="results_content">
+					<p>Найдено объектов: {{ equipments.count }}</p>
+
+					{% if equipments %}
+					<table id="results_table">
+						<tr>
+							<th>Фото</th>
+							<th style="width:400px;">Вид имущества и адрес</th>
+							<th style="width:285px;">Краткое описание</th>
+							<th style="width:200px;">Стоимость, тг</th>
+							<th style="width:40px;"></th>
+						</tr>
+						{% for equipment in equipments %}
+						<tr>
+							<td class="td_img">
+								{% if equipment.image1 %}
+								<a href="{% url 'detail_equipment' equipment.id %}">
+									<img class="img_fit" src="{{ equipment.image1.url }}">
+								</a>
+								{% endif %}
+							</td>
+							<td>
+								<a href="{% url 'detail_equipment' equipment.id %}">{{ equipment.brand }}</a>
+							</td>
+							<td style="font-size:17px;">г. {{ equipment.city }}, {{ equipment.equipmentType }}, {{ equipment.fuelType }}</td>
+							<td>{{ equipment.price }}</td>
+							<td>
+								<a href="{% url 'detail_equipment' equipment.id %}" >
+									<img src="{% static 'papp/imgs/next.png' %}" width="40px" />
+								</a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+					{% endif %}
+
+				</div>
+			</div>
+
+			<div id="footer">
+				<div id="footer_content">
+					<ul>
+						<li>
+							<div class="social_buttons">
+								<p style="padding-bottom: 28px;">&copy;АО Народный Банк Казахстана 2008-2016</p>
+								<ul>
+									<li><script type="text/javascript">
+										document.write(VK.Share.button({
+											url: 'http://mysite.com', 
+											title: 'Мой классный сайт'
+										}, 
+										{
+											type: 'round',
+											text: '&#x2764;'
+										})); 
+									</script></li>
+									<li><iframe src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&layout=button_count&size=small&mobile_iframe=true&width=140&height=20&appId" width="140" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe></li>
+									<li><a href="https://twitter.com/share" class="twitter-share-button">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
+								</ul>
+							</div>
+						</li>
+
+						<li>
+							<div class="certificates">
+								<img src="{% static 'papp/imgs/bsi-mark-iso.png' %}"/>
+								<img src="{% static 'papp/imgs/banner_pci.png' %}"/>
+							</div>
+						</li>
+
+						<li>
+							<div class="license">
+								<p>Лицензия на проведение банковских и иных операций и деятельности на рынке ценных бумаг номер 10 от 6 августа 2008 года</p>
+							</div>
+						</li>
+
+						<li>
+							<div class="creator">
+								<p>Создание сайта - Amphibia</p>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Смена drop down в зависимости от сессии
+		$(document).ready(function(){
+			loggedin_bool = false;
+			loggedin_str = '{{request.session.username}}';
+			if(loggedin_str) loggedin_bool = true;
+
+			if(loggedin_bool){
+				$('.logging').html(
+					'<a id="pass" href="{% url 'account' %}">Перейти</a>' + 
+					'<a id="logout" href="{% url 'logout' %}">Выйти</a>'
+				);
+				$('#logged_checker').css({
+					'display': 'inline'
+				});
+			}
+		});
+	</script>
+
+	<script type="text/javascript">
+		$(window).scroll(function(){
+			sessionStorage.scroll = Number($(window).scrollTop());
+		});
+		$(document).ready(function(){
+			// scrolling to previous place
+			if(sessionStorage.scroll != 'undefined'){
+				$(window).scrollTop(Number(sessionStorage.scroll));
+			}
+
+			$("#heading_content li a").click(function(){
+				$("#heading_content li .active").removeClass("active");
+				$(this).addClass("active");
+			});
+
+			// Dynamically changing content of page
+			$("#btn_map").click(function(){
+				$("#results_table").hide();
+				$("#map-canvas").show();
+				$("#btn_table").removeClass("results_active");
+				$(this).addClass("results_active");
+			});
+
+			$("#btn_table").click(function(){
+				$("#map-canvas").hide();
+				$("#results_table").show();
+				$("#btn_map").removeClass("results_active");
+				$(this).addClass("results_active");
+			});
+		});
+	</script>
+</body>
+</html> 

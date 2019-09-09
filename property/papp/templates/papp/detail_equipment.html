@@ -1,0 +1,425 @@
+{% load static %}
+<html>
+<head>
+	<title>Залоговое имущество</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<link rel="stylesheet" href="{% static 'papp/css/reset.css' %}">
+	<link rel="stylesheet" href="{% static 'papp/css/detail_auto.css' %}">
+	<link rel="shortcut icon" href="{% static 'papp/imgs/favicon.ico' %}" type="image/x-icon">
+
+	<!--Sidebar part-->
+	<script src="{% static 'papp/js/jquery-3.1.1.js' %}"></script>
+	<script src="{% static 'papp/js/sidebar.js' %}"></script>
+
+	<!--Markerclusterer-->
+	<script src="{% static 'papp/js/markerclusterer.js' %}"></script>
+
+	<!--Social buttons-->
+	<script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8"></script>
+
+</head>
+<body>
+	<div id="wrapper">
+
+		<div id="sidebar-wrapper">
+			<ul class="sidebar-nav">
+				<li><a href="/">Квартиры</a></li>
+				<li><a href="{% url 'house' %}">Жилые дома</a></li>
+				<li><a href="{% url 'parking' %}">Паркинги</a></li>
+				<li><a href="{% url 'land' %}">Земельные участки</a></li>
+				<li><a href="{% url 'commercial' %}">Коммерческая</a></li>
+				<li><a href="{% url 'industry' %}">Промбазы</a></li>
+				<li><a href="{% url 'auto' %}">Автомобили</a></li>
+				<li><a href="{% url 'equipment' %}">Спецтехника</a></li>
+			</ul>
+		</div>
+
+		<div id="overlay"></div>
+
+		<div class="page-content-wrapper">
+			<div id="header">
+				<div id="header_content">
+					<div id="menu">
+						<a href="javascript:void(0)" id="menu-toggle"><img src="{% static 'papp/imgs/menu.png' %}" alt="menu"></a>
+					</div>
+					<div id="logo">
+						<img src="{% static 'papp/imgs/logo.png' %}">
+					</div>
+					<div id="callcenter">
+						<p>+7 (727) <b>259 07 77</b><a href="javascript:void(0)"><img src="{% static 'papp/imgs/skype.png' %}" width="27px"></a></p>
+						<p><select name="city">
+							<option value="Almaty">Алматы</option>
+							<option value="Aktau">Актау</option>
+							<option value="Aktobe">Актобе</option>
+							<option value="Astana">Астана</option>
+							<option value="Atyrau">Атырау</option>
+							<option value="Zhezkazgan">Жезказган</option>
+							<option value="Karaganda">Караганда</option>
+							<option value="kokshetau">Кокшетау</option>
+							<option value="Kostanay">Костанай</option>
+							<option value="Kyzylorda">Кызылорда</option>
+							<option value="Pavlodar">Павлодар</option>
+							<option value="Petropavlovsk">Петропавловск</option>
+							<option value="Semey">Семей</option>
+							<option value="Taldykorgan">Талдыкорган</option>
+							<option value="Taraz">Тараз</option>
+							<option value="Uralsk">Уральск</option>
+							<option value="Ust-Kamenogorsk">Усть-Каменогорск</option>
+							<option value="Shymkent">Шымкент</option>
+						</select>
+						<img src="{% static 'papp/imgs/down.png' %}" width="14px" /></p>
+					</div>
+					<div id="contacts">
+						<p><img src="{% static 'papp/imgs/call.png' %}" width="27">Контакты</p>
+					</div>
+					<div id="personal_account">
+						<p><img src="{% static 'papp/imgs/personal_account.png' %}" width="30"><span id="logged_checker"></span>Личный кабинет</p>
+						<div class="logging">
+							<form method='GET' action="{% url 'login' %}">
+    							{% csrf_token %}
+    							<input type="hidden" name="next" value="{{request.path}}">
+    							<button type="submit">Войти</button>
+							</form>
+							<form method='GET' action="{% url 'register' %}">
+    							{% csrf_token %}
+    							<input type="hidden" name="next" value="{{request.path}}">
+    							<button type="submit">Регистрация</button>
+							</form>
+						</div>
+					</div>
+					<div id="languages">
+						<select name="languages">
+							<option>Ru</option>
+							<option>Kz</option>
+							<option>En</option>
+						</select><img src="{% static 'papp/imgs/down.png' %}" width="14px" />
+					</div>
+				</div>
+			</div>
+
+			{% if selected_equipment %}
+			<div id="heading">
+				<div id="heading_content">
+					<h1>Спецтехника</h1>
+				</div>
+			</div>
+
+			<div id="selecting_menu">
+				<div id="selecting_menu_content">
+					<div><a href="/">Вернуться к списку</a></div>
+					<div>
+						<ul>
+							<li>
+								{% if previous_equipment %}
+								<a href="{% url 'detail_equipment' previous_equipment.id %}">
+									<img src="{% static 'papp/imgs/previous.png' %}">
+								</a>
+								{% else %}
+								<a href="javascript:void(0)">
+									<img src="{% static 'papp/imgs/previous.png' %}">
+								</a>
+								{% endif %}
+							</li>
+							<li>
+								{% if previous_equipment %}
+								<a href="{% url 'detail_equipment' previous_equipment.id %}">Предыдущий объект</a>
+								{% else %}
+								<a href="javascript:void(0)">Предыдущий объект</a>
+								{% endif %}
+							</li>
+							<li>
+								{% if next_equipment %}
+								<a href="{% url 'detail_equipment' next_equipment.id %}">Следующий объект</a>
+								{% else %}
+								<a href="javascript:void(0)">Следующий объект</a>
+								{% endif %}
+							</li>
+							<li>
+								{% if next_equipment %}
+								<a href="{% url 'detail_equipment' next_equipment.id %}">
+									<img src="{% static 'papp/imgs/next.png' %}">
+								</a>
+								{% else %}
+								<a href="javascript:void(0)">
+									<img src="{% static 'papp/imgs/next.png' %}">
+								</a>
+								{% endif %}
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div id="main_info">
+				<div id="main_info_content">
+					<div id="object_info">
+						<h1>Информация об объекте</h1>
+						<table>
+							{% if selected_equipment.city %}
+							<tr style="width:200px">
+								<td>Город: </td>
+								<td>{{selected_equipment.city}}</td>
+							</tr>
+							{% endif %}
+							{% if selected_equipment.brand %}
+							<tr>
+								<td>Марка: </td>
+								<td>{{selected_equipment.brand}}</td>
+							</tr>
+							{% endif %}
+							{% if selected_equipment.color %}
+							<tr>
+								<td>Цвет: </td>
+								<td>{{selected_equipment.color}}</td>
+							</tr>
+							{% endif %}
+							{% if selected_equipment.price %}
+							<tr>
+								<td>Стоимость: </td>
+								<td>{{selected_equipment.price}}</td>
+							</tr>
+							{% endif %}
+							{% if selected_equipment.manufYear %}
+							<tr>
+								<td>Год выпуска: </td>
+								<td>{{selected_equipment.manufYear}} г.</td>
+							</tr>
+							{% endif %}
+							{% if selected_auto.equipmentType %}
+							<tr>
+								<td>Тип техники: </td>
+								<td>{{selected_auto.equipmentType}}</td>
+							</tr>
+							{% endif %}
+							{% if selected_auto.fuelType %}
+							<tr>
+								<td>Тип топлива: </td>
+								<td>{{selected_auto.fuelType}}</td>
+							</tr>
+							{% endif %}
+						</table>
+					</div>
+
+					<div id="additional_info">
+
+						<div class="action_bar">
+							<ul>
+								<li><img onclick="window.print()" style="width:30px;cursor:pointer;" src="{% static 'papp/imgs/print.png' %}"></li>
+								<li onclick="window.print()" style="cursor:pointer;">Печать страницы</li>
+								<li class="show_map"><img style="width:20px;"  src="{% static 'papp/imgs/marker_detail.png' %}"></li>
+								<li class="show_map">Посмотреть на карте</li>
+							</ul>
+						</div>
+
+						<div id="slider">
+							<img class="main_img" src="{{ selected_equipment.image1.url }}">
+							<ul>
+								{% if selected_equipment.image1 %}
+								<li class="active"><img src="{{ selected_equipment.image1.url }}"></li>
+								{% endif %}
+								{% if selected_equipment.image2 %}
+								<li><img src="{{ selected_equipment.image2.url }}"></li>
+								{% endif %}
+								{% if selected_equipment.image3 %}
+								<li><img src="{{ selected_equipment.image3.url }}"></li>
+								{% endif %}
+								{% if selected_equipment.image4 %}
+								<li><img src="{{ selected_equipment.image4.url }}"></li>
+								{% endif %}
+								{% if selected_equipment.image5 %}
+								<li><img src="{{ selected_equipment.image5.url }}"></li>
+								{% endif %}
+							</ul>
+						</div>
+
+						<div id="additional_contacts">
+							<h1>Дополнительная информация об объекте:</h1>
+							{% if selected_equipment %}
+							<table>
+								<tr>
+									<td><img style="width:40px;padding-right:20px;" src="{% static 'papp/imgs/phone-call.png' %}"></td>
+									<td style="width:160px;">Контактные данные:</td>
+									<td style="width:360px;">{{selected_equipment.contacts}}</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>Контактное лицо:</td>
+									<td>{{selected_equipment.contactFace}}</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<form id="suggest_price" method="POST" action="{% url 'send_equipment' %}">{% csrf_token %}
+											<input type="hidden" name="property_id" value="{{selected_equipment.id}}">
+											<input id="suggest_price_input" type="text" name="suggested_price" required placeholder="Ваша цена (тенге)*" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+											<input id="suggest_price_btn" type="submit" value="ПРЕДЛОЖИТЬ СВОЮ ЦЕНУ">
+										</form>
+									</td>
+								</tr>
+							</table>
+							{% endif %}
+						</div>
+					</div>	
+				</div>
+			</div>
+			{% endif %}
+
+			<div id="application">
+				<div id="application_content">
+					<h1>Онлайн заявка на приобретение залогового имущества</h1>
+					<form id="send_application" method="POST" action="{% url 'send_equipment' %}">{% csrf_token %}
+						<input type="hidden" name="property_id" value="{{selected_equipment.id}}">
+						<input type="hidden" name="suggested_price" value="0">
+						<input id="send_application_btn" type="submit" value="ОТПРАВИТЬ">
+					</form>
+				</div>
+			</div>
+
+			<div id="modal">
+				<div id="modal_content">
+					<span>Для отправления заявки необходимо 
+					<form style="display: inline;" method='GET' action="{% url 'login' %}">
+						<input type='hidden' name='next' value='{{request.path}}'>
+						<button class="modal_references" type='submit'>авторизоваться</button>
+					</form>
+					 или 
+					<form style="display: inline;" method='GET' action="{% url 'register' %}">
+						<input type='hidden' name='next' value='{{request.path}}'>
+						<button class="modal_references" type='submit'>зарегистрироваться</button>
+					</form>.</span><span>Это делается для сохранения истории Ваших заявок. Историю заявок можно посмотреть в Личном кабинете.</span>
+				</div>
+			</div>
+
+			<div id="success">
+				<div id="success_content">
+					<p>Ваша заявка успешно отправлена! Историю Ваших заявок Вы можете посмотреть в <span style="color:#007553;">Личном кабинете</span></p>
+				</div>
+			</div>
+
+			<div id="footer">
+				<div id="footer_content">
+					<ul>
+						<li>
+							<div class="social_buttons">
+								<p style="padding-bottom: 28px;">&copy;АО Народный Банк Казахстана 2008-2016</p>
+								<ul>
+									<li><script type="text/javascript">
+										document.write(VK.Share.button({
+											url: 'http://mysite.com', 
+											title: 'Мой классный сайт'
+										}, 
+										{
+											type: 'round',
+											text: '&#x2764;'
+										})); 
+									</script></li>
+									<li><iframe src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&layout=button_count&size=small&mobile_iframe=true&width=140&height=20&appId" width="140" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe></li>
+									<li><a href="https://twitter.com/share" class="twitter-share-button">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
+								</ul>
+							</div>
+						</li>
+
+						<li>
+							<div class="certificates">
+								<img src="{% static 'papp/imgs/bsi-mark-iso.png' %}"/>
+								<img src="{% static 'papp/imgs/banner_pci.png' %}"/>
+							</div>
+						</li>
+
+						<li>
+							<div class="license">
+								<p>Лицензия на проведение банковских и иных операций и деятельности на рынке ценных бумаг номер 10 от 6 августа 2008 года</p>
+							</div>
+						</li>
+
+						<li>
+							<div class="creator">
+								<p>Создание сайта - Amphibia</p>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Появление окна предупреждения
+		var modal = document.getElementById('modal');
+		var success = document.getElementById('success');
+		window.onclick = function(event){
+			if(event.target == modal) modal.style.display = 'none';
+			if(event.target == success) success.style.display = 'none';
+		}
+		function submit_application(){
+			document.getElementById('send_application').submit();
+		}
+		function submit_suggestion(){
+			document.getElementById('suggest_price').submit();
+		}
+		// Смена drop down в зависимости от сессии
+		$(document).ready(function(){
+			loggedin_bool = false;
+			loggedin_str = '{{request.session.username}}';
+			if(loggedin_str) loggedin_bool = true;
+
+			if(loggedin_bool){
+				$('.logging').html(
+					'<a id="pass" href="{% url 'account' %}">Перейти</a>' + 
+					'<a id="logout" href="{% url 'logout' %}">Выйти</a>'
+				);
+				$('#logged_checker').css({
+					'display': 'inline'
+				});
+				$('#send_application_btn').on('click', function(e){
+					e.preventDefault();
+					$('#success').css({
+						'display': 'block'
+					});
+					setTimeout('submit_application()', 1000);
+				});
+				$('#suggest_price_btn').on('click', function(e){
+					e.preventDefault();
+					$('#success').css({
+						'display': 'block'
+					});
+					setTimeout('submit_suggestion()', 1000);
+				});
+			}
+			else{
+				$('#send_application, #suggest_price').on('click', function(e){
+					e.preventDefault();
+					$('#modal').css({
+						'display': 'block'
+					});
+				});
+			}
+			$('#suggest_price_input').keypress(function(e){
+				if(e.which===32) return false;
+			});
+		});
+	</script>
+	<script type="text/javascript">
+		// Slider
+		$(function(){
+			$('#slider ul li').on('click', function(){
+				$('#slider .active').removeClass('active');
+				$(this).addClass('active');
+				$('#slider .main_img').attr('src', $(this).children().attr('src'));
+			});
+			$('#slider ul li').on('mouseover', function(){
+				$(this).css({
+					'opacity': '1'
+				});
+			});
+			$('#slider ul li').on('mouseout', function(){
+				$(this).css({
+					'opacity': '.7'
+				});
+			});
+		});
+	</script>
+</body>
+</html> 
